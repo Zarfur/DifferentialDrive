@@ -1,7 +1,15 @@
 package robot.drive;
+import com.revrobotics.REVLibError;
 
+import java.util.List;
+import java.util.function.DoubleSupplier;
+
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import robot.Ports;
 
@@ -14,7 +22,11 @@ public class Drive extends SubsystemBase {
       new CANSparkMax(Ports.Drive.RIGHT_LEADER, MotorType.kBrushless);
   private final CANSparkMax rightFollower =
       new CANSparkMax(Ports.Drive.RIGHT_FOLLOWER, MotorType.kBrushless);
-
+    
+  private void drive(double leftSpeed, double rightSpeed) {
+    leftLeader.set(leftSpeed);
+    rightLeader.set(rightSpeed);
+  }
      public Drive() {
         for (CANSparkMax spark : List.of(leftLeader, leftFollower, rightLeader, rightFollower)) {
             spark.restoreFactoryDefaults();
@@ -25,12 +37,7 @@ public class Drive extends SubsystemBase {
 
             leftLeader.setInverted(true);
       }
-      private void drive(double leftSpeed, double rightSpeed) {
-        leftLeader.set(leftSpeed);
-        rightLeader.set(rightSpeed);
-      }
-      public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight)
-      private Command drive(double vLeft, double vRight) {
+      public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight) {
         return run(() -> drive(vLeft.getAsDouble(), vRight.getAsDouble()));
       }
 }
